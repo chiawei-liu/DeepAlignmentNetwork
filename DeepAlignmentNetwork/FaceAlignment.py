@@ -80,7 +80,7 @@ class FaceAlignment(object):
        
         net[curStage + '_fc1'] = batch_norm(lasagne.layers.DenseLayer(net[curStage + '_fc1_dropout'], num_units=256, W=GlorotUniform('relu')))
 
-        net[curStage + '_output'] = lasagne.layers.DenseLayer(net[curStage + '_fc1'], num_units=136, nonlinearity=None)
+        net[curStage + '_output'] = lasagne.layers.DenseLayer(net[curStage + '_fc1'], num_units=120, nonlinearity=None)
         net[curStage + '_landmarks'] = lasagne.layers.ElemwiseSumLayer([net[prevStage + '_landmarks_affine'], net[curStage + '_output']])
 
         net[curStage + '_landmarks'] = LandmarkTransformLayer(net[curStage + '_landmarks'], net[prevStage + '_transform_params'], True)
@@ -110,7 +110,7 @@ class FaceAlignment(object):
         net['s1_fc1_dropout'] = lasagne.layers.DropoutLayer(net['s1_pool4'], p=0.5)
         net['s1_fc1'] = batch_norm(lasagne.layers.DenseLayer(net['s1_fc1_dropout'], num_units=256, W=GlorotUniform('relu')))
 
-        net['s1_output'] = lasagne.layers.DenseLayer(net['s1_fc1'], num_units=136, nonlinearity=None)
+        net['s1_output'] = lasagne.layers.DenseLayer(net['s1_fc1'], num_units=120, nonlinearity=None)
         net['s1_landmarks'] = LandmarkInitLayer(net['s1_output'], self.initLandmarks)
 
         if self.confidenceLayer:

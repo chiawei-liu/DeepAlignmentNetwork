@@ -52,10 +52,10 @@ class FaceAlignmentTraining(object):
         gtLandmarks = landmarks[1]
         initLandmarks = landmarks[0]
 
-        transformedLandmarks = T.reshape(output[:136], (68, 2))
+        transformedLandmarks = T.reshape(output[:120], (60, 2))
       
         meanError = T.mean(T.sqrt(T.sum((transformedLandmarks - gtLandmarks)**2, axis=1)))
-        eyeDist = (T.mean(gtLandmarks[36:42], axis=0) - T.mean(gtLandmarks[42:48], axis=0)).norm(2)
+        eyeDist = (T.mean(gtLandmarks[0], axis=0) - T.mean(gtLandmarks[16], axis=0)).norm(2)
         res = meanError / eyeDist
 
         return res
@@ -104,7 +104,7 @@ class FaceAlignmentTraining(object):
        
         net[curStage + '_fc1'] = batch_norm(lasagne.layers.DenseLayer(net[curStage + '_fc1_dropout'], num_units=256, W=GlorotUniform('relu')))
 
-        net[curStage + '_output'] = lasagne.layers.DenseLayer(net[curStage + '_fc1'], num_units=136, nonlinearity=None)
+        net[curStage + '_output'] = lasagne.layers.DenseLayer(net[curStage + '_fc1'], num_units=120, nonlinearity=None)
         net[curStage + '_landmarks'] = lasagne.layers.ElemwiseSumLayer([net[prevStage + '_landmarks_affine'], net[curStage + '_output']])
 
         net[curStage + '_landmarks'] = LandmarkTransformLayer(net[curStage + '_landmarks'], net[prevStage + '_transform_params'], True)
@@ -134,7 +134,7 @@ class FaceAlignmentTraining(object):
         net['s1_fc1_dropout'] = lasagne.layers.DropoutLayer(net['s1_pool4'], p=0.5)
         net['s1_fc1'] = batch_norm(lasagne.layers.DenseLayer(net['s1_fc1_dropout'], num_units=256, W=GlorotUniform('relu')))
 
-        net['s1_output'] = lasagne.layers.DenseLayer(net['s1_fc1'], num_units=136, nonlinearity=None)
+        net['s1_output'] = lasagne.layers.DenseLayer(net['s1_fc1'], num_units=120, nonlinearity=None)
         net['s1_landmarks'] = LandmarkInitLayer(net['s1_output'], self.initLandmarks)
 
         for i in range(1, self.nStages):
