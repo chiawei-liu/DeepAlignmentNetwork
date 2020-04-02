@@ -1,7 +1,10 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.integrate import simps
-from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from os import path
 
 def LandmarkError(imageServer, faceAlignment, normalization='centers', showResults=False, verbose=False):
     errors = []
@@ -25,6 +28,8 @@ def LandmarkError(imageServer, faceAlignment, normalization='centers', showResul
         elif normalization == 'diagonal':
             height, width = np.max(gtLandmarks, axis=0) - np.min(gtLandmarks, axis=0)
             normDist = np.sqrt(width ** 2 + height ** 2)
+        elif normalization == 'mangaChin':
+            normDist = np.linalg.norm(gtLandmarks[0] - gtLandmarks[16])
 
         error = np.mean(np.sqrt(np.sum((gtLandmarks - resLandmarks)**2,axis=1))) / normDist       
         errors.append(error)
@@ -35,6 +40,8 @@ def LandmarkError(imageServer, faceAlignment, normalization='centers', showResul
             plt.imshow(img[0], cmap=plt.cm.gray)            
             plt.plot(resLandmarks[:, 0], resLandmarks[:, 1], 'o')
             plt.show()
+            plt.savefig("../test_results/{0}".format(path.basename(imageServer.filenames[i])))
+            plt.clf()
 
     if verbose:
         print "Image idxs sorted by error"
@@ -60,5 +67,7 @@ def AUCError(errors, failureThreshold, step=0.0001, showCurve=False):
     if showCurve:
         plt.plot(xAxis, ced)
         plt.show()
+        plt.savefig("../AUCResult.jpg")
+        plt.clf()
 
     

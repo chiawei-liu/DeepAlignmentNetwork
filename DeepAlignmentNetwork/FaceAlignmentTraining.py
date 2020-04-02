@@ -7,7 +7,9 @@ import lasagne
 from lasagne.layers import Conv2DLayer, batch_norm
 from lasagne.init import GlorotUniform
 
-from matplotlib import pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import numpy as np
 import theano
 import theano.tensor as T
@@ -55,7 +57,7 @@ class FaceAlignmentTraining(object):
         transformedLandmarks = T.reshape(output[:120], (60, 2))
       
         meanError = T.mean(T.sqrt(T.sum((transformedLandmarks - gtLandmarks)**2, axis=1)))
-        eyeDist = (T.mean(gtLandmarks[0], axis=0) - T.mean(gtLandmarks[16], axis=0)).norm(2)
+        eyeDist = (gtLandmarks[0] - gtLandmarks[16]).norm(2)
         res = meanError / eyeDist
 
         return res
@@ -311,11 +313,13 @@ class FaceAlignmentTraining(object):
                 train_batches += 1
                 train_err += self.train_fn(inputs, targets)
                 
+                '''
                 if train_batches %40 == 0:
                     self.validateNetwork()
                     if self.errors[-1] < lowestError:
                         self.saveNetwork("../")
                         lowestError = self.errors[-1]
+                '''
 
             print(train_batches)
 

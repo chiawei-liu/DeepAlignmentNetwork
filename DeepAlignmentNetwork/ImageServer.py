@@ -4,6 +4,9 @@ import utils
 import cPickle as pickle
 import glob
 from os import path
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt  
 
 class ImageServer(object):
     def __init__(self, imgSize=[112, 112], frameFraction=0.25, initialization='box', color=False):
@@ -203,7 +206,6 @@ class ImageServer(object):
         
         self.imgs = self.imgs / self.stdDevImg
 
-        from matplotlib import pyplot as plt  
 
         meanImg = self.meanImg - self.meanImg.min()
         meanImg = 255 * meanImg / meanImg.max()  
