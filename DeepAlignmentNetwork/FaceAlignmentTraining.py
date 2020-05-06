@@ -300,7 +300,7 @@ class FaceAlignmentTraining(object):
         print("Starting training...")
         self.validateNetwork()        
         lowestError = np.min(self.errors)
-
+        lowestErrorInd = 0
         for epoch in range(num_epochs):
             print("Starting epoch " + str(epoch))
 
@@ -324,5 +324,9 @@ class FaceAlignmentTraining(object):
             print(train_batches)
 
             self.validateNetwork()
+            if self.errors[-1] < lowestError:
+                lowestErrorInd = len(self.errors)
+                lowestError = self.errors[-1]
             print("training loss:\t\t{:.6f}".format(train_err / train_batches))
             self.saveNetwork()
+        print("lowest error index: " + str(lowestErrorInd))

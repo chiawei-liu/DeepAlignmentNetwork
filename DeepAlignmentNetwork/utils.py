@@ -70,18 +70,20 @@ def mirrorShapes(shapes, imgShapes=None):
         else:
             shapes2[i, :, 0] = -shapes2[i, :, 0] + imgShapes[i][1]
         
-        lEyeIndU = range(36, 40)
-        lEyeIndD = [40, 41]
-        rEyeIndU = range(42, 46)
-        rEyeIndD = [46, 47]
-        lBrowInd = range(17, 22)
-        rBrowInd = range(22, 27)
+        lEyeIndU = range(27, 32)
+        lEyeIndD = range(32, 37)
+        rEyeIndU = range(37, 42)
+        rEyeIndD = range(42, 47)
+        lBrowInd = range(47, 52)
+        rBrowInd = range(52, 57)
+        lPupilInd = [57]
+        rPupilInd = [58]
         
-        uMouthInd = range(48, 55)
-        dMouthInd = range(55, 60)
-        uInnMouthInd = range(60, 65)
-        dInnMouthInd = range(65, 68)
-        noseInd = range(31, 36)
+        uMouthInd = range(17, 22)
+        dMouthInd = range(22, 27)
+        # uInnMouthInd = range(60, 65)
+        # dInnMouthInd = range(65, 68)
+        noseInd = [59]
         beardInd = range(17)
          
         lEyeU = shapes2[i, lEyeIndU].copy()
@@ -90,11 +92,13 @@ def mirrorShapes(shapes, imgShapes=None):
         rEyeD = shapes2[i, rEyeIndD].copy() 
         lBrow = shapes2[i, lBrowInd].copy()
         rBrow = shapes2[i, rBrowInd].copy()
+        lPupil = shapes2[i, lPupilInd].copy()
+        rPupil = shapes2[i, rPupilInd].copy()
 
         uMouth = shapes2[i, uMouthInd].copy()
         dMouth = shapes2[i, dMouthInd].copy()
-        uInnMouth = shapes2[i, uInnMouthInd].copy()
-        dInnMouth = shapes2[i, dInnMouthInd].copy()
+        # uInnMouth = shapes2[i, uInnMouthInd].copy()
+        # dInnMouth = shapes2[i, dInnMouthInd].copy()
         nose = shapes2[i, noseInd].copy()
         beard = shapes2[i, beardInd].copy()
         
@@ -107,10 +111,12 @@ def mirrorShapes(shapes, imgShapes=None):
         
         uMouthInd.reverse()
         dMouthInd.reverse()
-        uInnMouthInd.reverse()
-        dInnMouthInd.reverse()
+        # uInnMouthInd.reverse()
+        # dInnMouthInd.reverse()
         beardInd.reverse()
         noseInd.reverse()   
+        lPupilInd.reverse()
+        rPupilInd.reverse()
         
         shapes2[i, rEyeIndU] = lEyeU
         shapes2[i, rEyeIndD] = lEyeD
@@ -118,11 +124,13 @@ def mirrorShapes(shapes, imgShapes=None):
         shapes2[i, lEyeIndD] = rEyeD
         shapes2[i, rBrowInd] = lBrow
         shapes2[i, lBrowInd] = rBrow
+        shapes2[i, lPupilInd] = rPupil
+        shapes2[i, rPupilInd] = lPupil
         
         shapes2[i, uMouthInd] = uMouth
         shapes2[i, dMouthInd] = dMouth
-        shapes2[i, uInnMouthInd] = uInnMouth
-        shapes2[i, dInnMouthInd] = dInnMouth
+        # shapes2[i, uInnMouthInd] = uInnMouth
+        # shapes2[i, dInnMouthInd] = dInnMouth
         shapes2[i, noseInd] = nose
         shapes2[i, beardInd] = beard
         

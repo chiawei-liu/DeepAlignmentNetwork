@@ -5,6 +5,7 @@ import cPickle as pickle
 import glob
 from os import path
 import matplotlib
+import geoAug
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt  
 
@@ -123,6 +124,9 @@ class ImageServer(object):
                 bestFit = utils.bestFit(groundTruth, self.meanShape)
             elif self.initialization == 'box':
                 bestFit = utils.bestFitRect(groundTruth, self.meanShape, box=self.boundingBoxes[i])
+            elif self.initialization == 'whole':
+                box = np.array([0, 0, img.shape[2]-1, img.shape[1]-1])
+                bestFit = utils.bestFitRect(groundTruth, self.meanShape, box=box)
 
             self.imgs.append(img)
             self.initLandmarks.append(bestFit)
@@ -251,4 +255,10 @@ class ImageServer(object):
         groundTruth = np.dot(groundTruth, A) + t
         return outImg, initShape, groundTruth
 
-
+    def GeometricAugmentation(self, p_geom=0.):
+        for i in range(len(self.imgs)):
+            img = self.imgs[i]
+            img = img[0].astype('uint8')
+            img, self.gtLandmarks[i] = geoAug.augment_menpo_img_geom(img, self.gtLandmarks[i], p_geom)
+            img = img[np.newaxis]
+            self.imgs[i] = img

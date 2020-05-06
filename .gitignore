@@ -1,5 +1,8 @@
 *.pyc
 /data/images/
+/networks
+network*
+/test_results/
 
 #Ignore thumbnails created by Windows
 Thumbs.db

@@ -1,7 +1,7 @@
 from ImageServer import ImageServer
 import numpy as np
 
-imageDirs = ["../data/images/Manga_Cropped_60_Points/test/"]
+imageDirs = ["../data/images/Manga_Cropped_60_Points_v2/test/"]
 datasetDir = "../data/"
 
 meanShape = np.load("../data/mangaMeanFaceShape.npz")["meanShape"]
