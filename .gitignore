@@ -3,6 +3,7 @@
 /networks
 network*
 /test_results/
+.ipynb_checkpoints
 
 #Ignore thumbnails created by Windows
 Thumbs.db

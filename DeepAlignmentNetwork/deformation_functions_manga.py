@@ -1,5 +1,5 @@
+# Modified from Face of Art: https://github.com/papulke/face-of-art
 import numpy as np
-
 
 def deform_part(landmarks, part_inds, scale_y=1., scale_x=1., shift_ver=0., shift_horiz=0.):
     """ deform facial part landmarks - matching ibug annotations of 68 landmarks """

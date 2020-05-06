@@ -1,4 +1,4 @@
-# from Face of Art: https://github.com/papulke/face-of-art
+# Modified from Face of Art: https://github.com/papulke/face-of-art
 import numpy as np
 import pickle
 import os
