@@ -33,6 +33,13 @@ def calculate_evidence(patch_responses, rate=0.25, offset=20):
     y_weight = [np.sum(patch_responses[i,0,...], axis=1) for i in range(n_points)]
     x_weight = [np.sum(patch_responses[i,0,...], axis=0) for i in range(n_points)]
 
+    '''
+    for i in range(n_points):
+        if np.count_nonzero(x_weight[i]) is 0:
+            x_weight[i].fill(1)
+        if np.count_nonzero(y_weight[i]) is 0:
+            y_weight[i].fill(1) 
+    ''' 
     # y_weight /= y_weight.sum()
     # x_weight /= x_weight.sum()
 
@@ -40,7 +47,7 @@ def calculate_evidence(patch_responses, rate=0.25, offset=20):
     x_coordinate = range(0, rspmapShape[1])
 
     varList = [(np.abs(np.average((y_coordinate - np.average(y_coordinate, weights=y_weight[i]))**2, weights=y_weight[i])),
-                np.abs(np.average((x_coordinate - np.average(x_coordinate, weights=x_weight[i])) ** 2, weights=x_weight[i])))
+                np.abs(np.average((x_coordinate - np.average(x_coordinate, weights=x_weight[i]))**2, weights=x_weight[i])))
                 for i in range(n_points)]
 
     # patch_responses[patch_responses<0.001] = 0

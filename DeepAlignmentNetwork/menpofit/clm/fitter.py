@@ -1,7 +1,7 @@
 from menpofit.fitter import MultiScaleParametricFitter
 from menpofit import checks
 
-from .algorithm import RegularisedLandmarkMeanShift
+from .algorithm import RegularisedLandmarkMeanShift, MangaRegularisedLandmarkMeanShift
 
 
 class CLMFitter(MultiScaleParametricFitter):
@@ -68,9 +68,10 @@ class GradientDescentCLMFitter(CLMFitter):
         components without trimming the unused ones. Also, the available
         components may have already been trimmed to `max_shape_components`
         during training.
+    img_size: `int`, optional
     """
-    def __init__(self, clm, gd_algorithm_cls=RegularisedLandmarkMeanShift,
-                 n_shape=None):
+    def __init__(self, clm, gd_algorithm_cls=MangaRegularisedLandmarkMeanShift,
+                 n_shape=None, img_size=112):
         # Store CLM trained model
         self._model = clm
 
@@ -83,7 +84,8 @@ class GradientDescentCLMFitter(CLMFitter):
                                        kernel_covariance=clm.opt['kernel_covariance'],
                                        kernel_idealmap=clm.opt['sigOffset'],
                                        confidence_gama=clm.opt['sigRate'],
-                                       opt=clm.opt)
+                                       opt=clm.opt, 
+                                       imgSize=img_size)
                       for i in range(clm.n_scales)]
 
         # Call superclass

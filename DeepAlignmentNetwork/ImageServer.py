@@ -1,11 +1,16 @@
 from scipy import ndimage
 import numpy as np
 import utils
-import cPickle as pickle
+try:
+    import cPickle as pickle
+except:
+    import _pickle as pickle
 import glob
 from os import path
 import matplotlib
 import geoAug
+import cv2
+from skimage.morphology import thin
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt  
 
@@ -150,7 +155,7 @@ class ImageServer(object):
         rotationStdDevRad = rotationStdDev * np.pi / 180         
         translationStdDevX = translationMultX * (scaledMeanShape[:, 0].max() - scaledMeanShape[:, 0].min())
         translationStdDevY = translationMultY * (scaledMeanShape[:, 1].max() - scaledMeanShape[:, 1].min())
-        print "Creating perturbations of " + str(self.gtLandmarks.shape[0]) + " shapes"
+        print("Creating perturbations of " + str(self.gtLandmarks.shape[0]) + " shapes")
 
         for i in range(self.initLandmarks.shape[0]):
             print(i)
@@ -181,17 +186,20 @@ class ImageServer(object):
         newImgs = []  
         newGtLandmarks = []
         newInitLandmarks = []   
+        transform = []
         
         for i in range(self.initLandmarks.shape[0]):
-            tempImg, tempInit, tempGroundTruth = self.CropResizeRotate(self.imgs[i], self.initLandmarks[i], self.gtLandmarks[i])
+            tempImg, tempInit, tempGroundTruth, A, t = self.CropResizeRotate(self.imgs[i], self.initLandmarks[i], self.gtLandmarks[i])
 
             newImgs.append(tempImg)
             newInitLandmarks.append(tempInit)
             newGtLandmarks.append(tempGroundTruth)
+            transform.append({'A':A, 't':t})
 
         self.imgs = np.array(newImgs)
         self.initLandmarks = np.array(newInitLandmarks)
-        self.gtLandmarks = np.array(newGtLandmarks)  
+        self.gtLandmarks = np.array(newGtLandmarks) 
+        self.transform = np.array(transform) 
 
     def NormalizeImages(self, imageServer=None):
         self.imgs = self.imgs.astype(np.float32)
@@ -253,7 +261,7 @@ class ImageServer(object):
         initShape = np.dot(initShape, A) + t
 
         groundTruth = np.dot(groundTruth, A) + t
-        return outImg, initShape, groundTruth
+        return outImg, initShape, groundTruth, A, t
 
     def GeometricAugmentation(self, p_geom=0.):
         for i in range(len(self.imgs)):
@@ -262,3 +270,46 @@ class ImageServer(object):
             img, self.gtLandmarks[i] = geoAug.augment_menpo_img_geom(img, self.gtLandmarks[i], p_geom)
             img = img[np.newaxis]
             self.imgs[i] = img
+    
+    '''
+    def ToOriginalSize(self, index, pred_lms):
+        A = self.transform[index][0]
+        t = self.transform[index][1]
+        A2 = np.linalg.inv(A)
+        orig_size_lms = np.dot(pred_lms - t, A2)
+        return self.originalImage[index], orig_size_lms
+    '''
+
+    def adaptiveThresholding(self, blockSize=21, param=50):
+        for i in range(self.imgs.shape[0]):
+            if self.color:
+                img = np.mean(self.imgs[i], axis=0)
+                img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, blockSize, param)
+                img = np.array([img, img, img])
+                self.imgs[i] = img
+            else:
+                img = self.imgs[i][0]
+                img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, blockSize, param)
+                self.imgs[i] = img[np.newaxis]
+    
+    def inverse(self):
+        for i in range(self.imgs.shape[0]):
+            self.imgs[i] = 255 - self.imgs[i]
+
+    def thin(self):
+        for i in range(self.imgs.shape[0]):
+            if self.color:
+                img = np.mean(self.imgs[i], axis=0)
+                img = np.where(img == 255, 0, 255)
+                img = thin(img, 1)
+                img - np.array(img, dtype='uint8')
+                img = np.where(img < 1, 255, 0)
+                img = np.array([img, img, img])
+                self.imgs[i] = img
+            else:
+                img = self.imgs[i][0]
+                img = np.where(img == 255, 0, 255)
+                img = thin(img, 1)
+                img - np.array(img, dtype='uint8')
+                img = np.where(img < 1, 255, 0)
+                self.imgs[i] = img[np.newaxis]

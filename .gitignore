@@ -2,7 +2,7 @@
 /data/images/
 /networks
 network*
-/test_results/
+/test_results*/
 .ipynb_checkpoints
 
 #Ignore thumbnails created by Windows

@@ -15,8 +15,8 @@ def augment_menpo_img_geom(img, landmarks, p_geom=0.):
         try:
             img_warp = warpImageTPS(img, landmarks, lms_geom_warp)
             return img_warp, lms_geom_warp
-        except np.linalg.linalg.LinAlgError as err:
-            print ('Error:'+str(err)+'\nUsing original landmarks for:\n'+str(img.path))
+        except Exception as err:
+            print ('Error:'+str(err)+'\nUsing original landmarks')
             return img, landmarks
     return img, landmarks
 
@@ -92,4 +92,6 @@ def warpImageTPS(img, src, dst, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CO
 
 	tps.estimateTransformation(dst, src, matches)
 	new_img = tps.warpImage(img, flags=flags, borderMode=borderMode)
+    if np.all(new_img == new_img[0, 0]):
+        raise Exception('Warp failed')
 	return new_img

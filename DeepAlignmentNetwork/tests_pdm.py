@@ -5,27 +5,19 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from os import path
-from pdm_clm_functions_manga import feature_based_pdm_corr
+from pdm_clm_functions_manga import feature_based_pdm_corr, clm_correct
+from menpo.image import Image
 
-def LandmarkError(imageServer, faceAlignment, normalization='centers', showResults=False, verbose=False, pdm=False, pc_opt=None):
+def LandmarkError(gt_lms_list, pred_lms_list, part_inds=None, normalization='centers', showResults=False, verbose=False):
     errors = []
-    nImgs = len(imageServer.imgs)
+    
+    if part_inds is None:
+        part_inds = np.arange(60)
 
-    for i in range(nImgs):
-        initLandmarks = imageServer.initLandmarks[i]
-        gtLandmarks = imageServer.gtLandmarks[i]
-        img = imageServer.imgs[i]
+    for i in range(len(gt_lms_list)):
+        gtLandmarks = gt_lms_list[i]
+        predLandmarks = pred_lms_list[i]
 
-        if img.shape[0] > 1:
-            img = np.mean(img, axis=0)[np.newaxis]
-
-        resLandmarks = initLandmarks
-        resLandmarks = faceAlignment.processImg(img, resLandmarks)
-
-        if pdm:
-            pdmLandmarks = feature_based_pdm_corr(lms_init=resLandmarks, models_dir='../data/pdm_models/', pc_opt=pc_opt)
-            resLandmarks = pdmLandmarks
-            
         if normalization == 'centers':
             normDist = np.linalg.norm(np.mean(gtLandmarks[36:42], axis=0) - np.mean(gtLandmarks[42:48], axis=0))
         elif normalization == 'corners':
@@ -36,11 +28,12 @@ def LandmarkError(imageServer, faceAlignment, normalization='centers', showResul
         elif normalization == 'mangaChin':
             normDist = np.linalg.norm(gtLandmarks[0] - gtLandmarks[16])
 
-        error = np.mean(np.sqrt(np.sum((gtLandmarks - resLandmarks)**2,axis=1))) / normDist       
+        #errors = [np.mean(np.sqrt(np.sum((gt_lms_list[i] - pred_lms_list[i])**2,axis=1))) / normDist for i in range(len(gt_lms_list))]
+        #mean_errors = np.mean(np.mean(np.sqrt(np.sum((gt_lms_list - pred_lms_list)**2, axis=2)), axis=1) / normDist)
+    
+        error = np.mean(np.sqrt(np.sum((gtLandmarks[part_inds] - predLandmarks[part_inds])**2,axis=1))) / normDist       
         errors.append(error)
-        if verbose:
-            print("{0}: {1}".format(i, error))
-
+    '''
         if showResults:
             plt.imshow(img[0], cmap=plt.cm.gray)            
             plt.plot(resLandmarks[:, 0], resLandmarks[:, 1], 'o')
@@ -48,7 +41,20 @@ def LandmarkError(imageServer, faceAlignment, normalization='centers', showResul
             plt.savefig("../test_results_pdm/{0}".format(path.basename(imageServer.filenames[i])[:-4] + '.png'))
             plt.clf()
 
+
+        if exportPTS:
+            img_menpo = Image(imageServer.img[i])
+            img_menpo.landmarks['ecptp_jaw'] = PointCloud(ecptp_jaw)
+            img_menpo.landmarks['ecptp_out'] = PointCloud(ecptp_out)
+            img_menpo.landmarks['ect'] = PointCloud(ect_lms)
+            img_menpo.landmarks['e'] = PointCloud(resLandmarks)
+            img_menpo.landmarks['ecp'] = PointCloud(p_pdm_lms)
+            img_menpo.landmarks['ecpt'] = PointCloud(pdm_clm_lms)
+            mio
+    '''
     if verbose:
+        #print(errors.shape)
+        #print(mean_errors)
         print "Image idxs sorted by error"
         print np.argsort(errors)
     avgError = np.mean(errors)

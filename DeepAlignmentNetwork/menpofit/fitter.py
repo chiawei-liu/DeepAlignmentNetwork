@@ -400,7 +400,7 @@ class MultiScaleNonParametricFitter(object):
             # Add scale transform to list
             scale_transforms.append(scale_transform)
 
-            scaled_image.path = image.path
+            #scaled_image.path = image.path
             # Add scaled image to list
             images.append(scaled_image)
 

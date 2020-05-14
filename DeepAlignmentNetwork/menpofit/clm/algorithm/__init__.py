@@ -1,1 +1,1 @@
-from .gd import ActiveShapeModel, RegularisedLandmarkMeanShift
+from .gd import ActiveShapeModel, RegularisedLandmarkMeanShift, MangaRegularisedLandmarkMeanShift
