@@ -1,57 +1,39 @@
-# Deep Alignment Network #
-This is a reference implementation of the face alignment method described in "Deep Alignment Network: A convolutional neural network for robust face alignment" which has been accepted to the First Faces in-the-wild Workshop-Challenge at CVPR 2017. You can read the entire paper on Arxiv [here](https://arxiv.org/abs/1706.01789). You can download the presentation and poster from Dropbox [here](https://www.dropbox.com/sh/u4g2o5kha0mt1uc/AADDMkoMKG2t4iiTxMUC6e2Ta?dl=0) or Google drive [here](https://drive.google.com/drive/folders/1QFZk_ED_FLW0xZC_gNuAKsYjLyKRMPPy).
+# Manga Facial Landmarks Detection Based on Part-Based Correction and Deep Alignment Network
 
-<img src="http://home.elka.pw.edu.pl/~mkowals6/lib/exe/fetch.php?media=wiki:dan-poster.jpg" width="60%">
+This is an implementation of my thesis for my bachelor's degree. The thesis is written in Chinese and not published publicly, but feel free to contact me if interested in more details.
 
-## Getting started ##
-First of all you need to make sure you have installed Python 2.7. For that purpose we recommend Anaconda, it has all the necessary libraries except:
- * Theano 0.9.0
- * Lasagne 0.2
- * OpenCV 3.1.0 or newer
+This repo is forked from [Deep Alignment Network](https://github.com/MarekKowalski/DeepAlignmentNetwork) and added with the methods proposed in [Combining Data-driven and Model-driven Methods for Robust Facial Landmark Detection](https://github.com/HongwenZhang/ECT-FaceAlignment) in search for improvements for Manga facial landmarks detection.
 
-OpenCV can be downloaded from Christoph Gohlke's [website](http://www.lfd.uci.edu/~gohlke/pythonlibs/). 
-Theano and Lasagne can be installed with the following commands:
-```
-  pip install Theano==0.9.0
-  pip install https://github.com/Lasagne/Lasagne/archive/master.zip
-```
-Once you have installed Python and the dependencies download at least one of the two pre-trained models available on Dropbox [here](https://www.dropbox.com/sh/v754z1egib0hamh/AADGX1SE9GCj4h3eDazsc0bXa?dl=0) or Google drive [here](https://drive.google.com/open?id=168tC2OxS5DjyaiuDy_JhIV3eje8K_PLJ).
+# Reference
 
-The easiest way to see our method in action is to run the CameraDemo.py script which performs face tracking on a local webcam.
+[1] ZHANG H, LI Q, SUN Z, et al. Combining Data-driven and Model-driven Methods for 
+Robust Facial Landmark Detection[J]. IEEE Transactions on Information Forensics and 
+Security, 2018, 13(10):2409-2422. 
 
-## Running the experiments from the article ##
-Before continuing download the model files as described above.
+[2] YANIV J, NEWMAN Y, SHAMIR A. The face of art: landmark detection and geometric style 
+in portraits[J]. ACM Transactions on Graphics, 2019, 38(4):60:1-60:15. 
 
-### Comparison with state-of-the-art ###
-Download the 300W, LFPW, HELEN, AFW and IBUG datasets from https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/ and extract them to /data/images/ into separate directories: 300W, lfpw, helen, afw and ibug.
-Run the TestSetPreparation.py script, it may take a while.
+[3] MATSUI Y, ITO K, ARAMAKI Y, et al. Sketch-based manga retrieval using manga109 
+dataset[J]. Multimedia Tools and Applications, 2017, 76(20):21811-21838. 
 
-Use the DANtesting.py script to perform the experiments. It will calculate the average error for all of the test subsets as well as the AUC@0.08 score and failure rate for the 300W public and private test sets.
+[4] AIZAWA K, FUJIMOTO A, OTSUBO A, et al. Building a Manga Dataset ”Manga109” with 
+Annotations for Multimedia Applications[J]. IEEE MultiMedia, 2020:1-1. 
 
-The parameters you can set in the script are as follows:
- * verbose: if True the script will display the error for each image,
- * showResults: if True it will show the localized landmarks for each image,
- * showCED: if True the Cumulative Error Distribution curve will be shown along with the AUC score,
- * normalization: 'centers' for inter-pupil distance, 'corners' for inter-ocular distance, 'diagonal' for bounding box diagonal normalization.
- * failureThreshold: the error threshold over which the results are considered to be failures, for inter-ocular distance it should be set to 0.08,
- * networkFilename: either '../DAN.npz' or '../DAN-Menpo.npz'.
+[5] CHU W T, LI W W. Manga FaceNet: Face Detection in Manga based on Deep Neural Network 
+[C]//ICMR ’17: Proceedings of the 2017 ACM on International Conference on Multimedia 
+Retrieval. Bucharest, Romania: Association for Computing Machinery, 2017: 412-415. 
 
-### Results on the Menpo test set ###
-Download the Menpo test set from https://ibug.doc.ic.ac.uk/resources/ and extract it. Open the MenpoEval.py script and make sure that MenpoDir is set to the directory with images that you just extracted.
-Run the scripts to process the dataset. The results will be saved as images and pts files in the directories indicated in the imgOutputDir and ptsOutputDir variables.
+[6] STRICKER M, AUGEREAU O, KISE K, et al. Facial Landmark Detection for Manga 
+Images[J]. arXiv preprint arXiv:1811.03214, 2018. 
 
-## TensorFlow implementation ##
-Two TensorFlow implementations of Deep Alignment Network have been published by other GitHub users:
- - [zjjMaiMai's implementatation](https://github.com/zjjMaiMai/Deep-Alignment-Network-A-convolutional-neural-network-for-robust-face-alignment),
- - [mariolew's implementatation](https://github.com/mariolew/Deep-Alignment-Network-tensorflow).
+[7] KOWALSKI M, NARUNIEC J, TRZCINSKI T. Deep Alignment Network: A convolutional 
+neural network for robust face alignment[C]//Proceedings of the IEEE Conference on 
+Computer Vision and Pattern Recognition Workshops. 2017: 88-97. 
 
-## Citation ## 
-If you use this software in your research, then please cite the following paper:
+[8] GOWER J C. Generalized procrustes analysis[J]. Psychometrika, 1975, 40(1):33-51. 
 
-Kowalski, M.; Naruniec, J.; Trzcinski, T.: "Deep Alignment Network: A convolutional neural network for robust face alignment", CVPRW 2017
+[9] DUCHON J. Splines minimizing rotation-invariant semi-norms in Sobolev spaces[M]// DOLD 
+A, ECKMANN B, SCHEMPP W, et al. Constructive Theory of Functions of Several Variables: 
+volume 571. Berlin, Heidelberg: Springer Berlin Heidelberg, 1977: 85-100. 
 
-## License ##
-While the code is licensed under the MIT license, which allows for commercial use, keep in mind that the models linked above were trained on the 300-W dataset, which allows for research use only. For details please see: https://ibug.doc.ic.ac.uk/resources/facial-point-annotations/
 
-## Contact ##
-If you have any questions or suggestions feel free to contact me at <m.kowalski@ire.pw.edu.pl>.
